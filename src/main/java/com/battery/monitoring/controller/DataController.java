@@ -8,15 +8,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.time.LocalDateTime;
 
 @Controller
 @RequiredArgsConstructor
+@RequestMapping("/api/monitoring")
 public class DataController {
     private final MonitorLogRepository monitorLogRepository;
 
-    @PostMapping
+    @PostMapping("/data")
     public ResponseEntity<String> receiveData(@RequestBody MonitorDTO monitorDTO) {
         MonitorLog monitorLog = new MonitorLog();
         monitorLog.setDeviceId(monitorDTO.getDeviceId());

@@ -196,7 +196,7 @@
     }
 
     async function fetchData() {
-      const selectedId = parseInt(deviceSelect.value) || availableDeviceIds[0];
+      const selectedId = deviceSelect.value || availableDeviceIds[0];
       if (!selectedId) return;
 
       try {

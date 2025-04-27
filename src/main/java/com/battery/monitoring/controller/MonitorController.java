@@ -19,13 +19,13 @@ public class MonitorController {
     private final MonitorLogRepository repos;
 
     @GetMapping("/data")
-    public List<MonitorLog> getMonitorDataByDevice(int deviceId) {
+    public List<MonitorLog> getMonitorDataByDevice(String deviceId) {
         return repos.findTop100ByDeviceIdOrderByTimestampDesc(deviceId);
     }
 
     @GetMapping("/devices")
-    public List<Integer> getAllDeviceIds() {
-        List<Integer> ids = repos.findDistinctDeviceId();
+    public List<String> getAllDeviceIds() {
+        List<String> ids = repos.findDistinctDeviceId();
         log.info("조회된 deviceIds = " + ids);
         return ids;
     }

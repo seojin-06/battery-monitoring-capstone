@@ -12,11 +12,12 @@ import java.time.LocalDateTime;
 @Setter
 public class MonitorLog {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "device_id")
-    private int deviceId;
+    private String deviceId;
 
     private int predict;
 
@@ -24,5 +25,6 @@ public class MonitorLog {
 
     private float threshold;
 
+    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime timestamp;
 }

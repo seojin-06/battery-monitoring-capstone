@@ -7,8 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface MonitorLogRepository extends JpaRepository<MonitorLog, Long> {
-    List<MonitorLog> findTop100ByDeviceIdOrderByTimestampDesc(int deviceId);
+    List<MonitorLog> findTop100ByDeviceIdOrderByTimestampDesc(String deviceId);
 
     @Query("SELECT DISTINCT m.deviceId FROM MonitorLog m ORDER BY m.deviceId")
-    List<Integer> findDistinctDeviceId();
+    List<String> findDistinctDeviceId();
 }
