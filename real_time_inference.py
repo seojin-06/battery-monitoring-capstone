@@ -4,7 +4,8 @@ import numpy as np
 import pickle
 from model import tasks       # model/tasks.py
 from model import dynamic_vae # model/dynamic_vae.py
-import getData
+import raspSensor
+import requests
 # 모델 불러오기
 model = torch.load('quantized_model.torch', weights_only=False, map_location='cpu')
 model.eval()
@@ -37,7 +38,7 @@ while True:
     #     "min_temp": 36.0,            # 최저 셀 온도
     #     "timestamp": 0.0             # dummy timestamp
     # }
-    sensor_data = getData.getData()
+    sensor_data = raspSensor.getData()
 
     # 센서 데이터를 raw column 순서로 배열
     sensor_input = np.array([[sensor_data[col] for col in raw_columns]], dtype=np.float32)
@@ -62,15 +63,28 @@ while True:
 
         target = task.target_filter(input_tensor)
         rec_error = float(mse(log_p, target))
-        
-    print(target)
-    getData.printData(sensor_data)
 
+    print(target)
+    raspSensor.printData(sensor_data)
+    
     # 이상 여부 판단
     if rec_error > threshold:
         print(f"이상 발생 감지! Reconstruction Error: {rec_error:.6f}")
+        predict = 1
     else:
         print(f"정상 상태. Reconstruction Error: {rec_error:.6f}")
+        predict = 0
+
+    postData = {
+        "deviceId": "raspberrypi01",
+        "predict": predict,
+        "error": rec_error,
+        "threshold": threshold
+    }
+    res = requests.post("http://3.25.67.35:8082/", json=postData)
+    print(res)
+
+
 
     # 다음 데이터 읽기 전 잠시 대기
     time.sleep(2)
