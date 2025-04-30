@@ -4,7 +4,7 @@ import numpy as np
 import pickle
 from model import tasks       # model/tasks.py
 from model import dynamic_vae # model/dynamic_vae.py
-
+import getData
 # 모델 불러오기
 model = torch.load('quantized_model.torch', weights_only=False, map_location='cpu')
 model.eval()
@@ -27,16 +27,17 @@ mse = torch.nn.MSELoss(reduction='mean')
 
 while True:
    #센서 데이터 읽어오기
-    sensor_data = {
-        "volt": 3.7,                 # 팩 전체 전압
-        "current": 0.0,              # 배터리 전류
-        "soc": 78.0,                 # state of charge
-        "max_single_volt": 4.2,      # 최고 셀 전압
-        "min_single_volt": 4.1,      # 최저 셀 전압
-        "max_temp": 37.0,            # 최고 셀 온도
-        "min_temp": 36.0,            # 최저 셀 온도
-        "timestamp": 0.0             # dummy timestamp
-    }
+    # sensor_data = {
+    #     "volt": 3.7,                 # 팩 전체 전압
+    #     "current": 0.0,              # 배터리 전류
+    #     "soc": 78.0,                 # state of charge
+    #     "max_single_volt": 4.2,      # 최고 셀 전압
+    #     "min_single_volt": 4.1,      # 최저 셀 전압
+    #     "max_temp": 37.0,            # 최고 셀 온도
+    #     "min_temp": 36.0,            # 최저 셀 온도
+    #     "timestamp": 0.0             # dummy timestamp
+    # }
+    sensor_data = getData.getData()
 
     # 센서 데이터를 raw column 순서로 배열
     sensor_input = np.array([[sensor_data[col] for col in raw_columns]], dtype=np.float32)
@@ -69,4 +70,4 @@ while True:
         print(f"정상 상태. Reconstruction Error: {rec_error:.6f}")
 
     # 다음 데이터 읽기 전 잠시 대기
-    time.sleep(1)
+    time.sleep(2)
