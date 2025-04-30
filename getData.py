@@ -153,15 +153,15 @@ if __name__ == "__main__":
     while True:
         #print(read_temp())
         data = getData()
-        print("""
-        data["volt"] : {:6.3f}   V
-        data["current"] : {:7.4f}  A
-        data["soc"] : {:3d} %
-        data["max_single_volt"] : {:6.3f}   V
-        data["min_single_volt"] : {:6.3f}   V
-        data["max_temp"] : {:3d} C
-        data["min_temp"] : {:3d} C
-        """.format(data["volt"], data["current"], data["soc"], data["max_single_volt"], data["min_single_volt"], data["max_temp"], data["min_temp"]))
+        print(f"voltage: {data['volt']:.3f} V")
+        print(f"current: {data['current']:.3f} A")
+        print(f"soc: {data['soc']:3d} %")
+        print(f"max_single_volt: {data['max_single_volt']:.3f} V")
+        print(f"min_single_volt: {data['min_single_volt']:.3f} V")
+        print(f"max_temp: {data['max_temp']:.3f} C")
+        print(f"min_temp: {data['min_temp']:.3f} C")
+        print(f"timestamp: {data['timestamp']:.3f} s")
+        print("")
         vol, curr, soc = getBatteryStatus()
         
         now = time.localtime()
