@@ -81,7 +81,7 @@ while True:
         "error": rec_error,
         "threshold": threshold
     }
-    res = requests.post("http://3.25.67.35:8082/", json=postData)
+    res = requests.post("http://3.25.67.35:8082/api/monitoring/data", json=postData)
     print(res)
 
 
