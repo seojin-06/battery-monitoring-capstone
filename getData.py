@@ -105,10 +105,10 @@ def getBatteryStatus():
     # print("Voltage (VIN-) : {:6.3f}   V".format(bus_voltage))
     # print("Shunt Voltage  : {:8.5f} V".format(shunt_voltage))
     # print("Shunt Current  : {:7.4f}  A".format(current / 1000))
-    print("Power Calc.    : {:8.5f} W".format(bus_voltage * (current / 1000)))
+    #print("Power Calc.    : {:8.5f} W".format(bus_voltage * (current / 1000)))
     # print("Power Register : {:6.3f}   W".format(power))
-    print("ocv_voltage    : {:6.3f}   V".format(ocv_voltage))
-    print("SOC           : {:3d} %".format(soc))
+    #print("ocv_voltage    : {:6.3f}   V".format(ocv_voltage))
+    #print("SOC           : {:3d} %".format(soc))
     # print("")
 
     # Check internal calculations haven't overflowed (doesn't detect ADC overflows)
@@ -150,7 +150,9 @@ TODO: 웹서버에 데이터 POST 필요
 '''
 if __name__ == "__main__":
     while True:
-        print(read_temp())
+        #print(read_temp())
+        data = getData()
+        print(data)
         vol, curr, soc = getBatteryStatus()
         
         now = time.localtime()
@@ -160,6 +162,6 @@ if __name__ == "__main__":
         mylcd.lcd_display_string(f"Temp: {read_temp()[0]:.3f} C", 2)
         mylcd.lcd_display_string(f"vol: {vol:.3f}v ", 3)
         mylcd.lcd_display_string(f"curr: {curr:.3f}", 4)
-        time.sleep(1)
+        time.sleep(3)
         mylcd.lcd_clear()
 
