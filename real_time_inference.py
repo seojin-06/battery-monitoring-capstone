@@ -62,6 +62,9 @@ while True:
 
         target = task.target_filter(input_tensor)
         rec_error = float(mse(log_p, target))
+        
+    print(target)
+    getData.printData(sensor_data)
 
     # 이상 여부 판단
     if rec_error > threshold:

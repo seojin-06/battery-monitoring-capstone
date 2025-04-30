@@ -145,6 +145,17 @@ def getData():
     }
     return sensor_data
 
+def printData(data):
+    print(f"voltage: {data['volt']:.3f} V")
+    print(f"current: {data['current']:.3f} A")
+    print(f"soc: {data['soc']:3d} %")
+    print(f"max_single_volt: {data['max_single_volt']:.3f} V")
+    print(f"min_single_volt: {data['min_single_volt']:.3f} V")
+    print(f"max_temp: {data['max_temp']:.3f} C")
+    print(f"min_temp: {data['min_temp']:.3f} C")
+    print(f"timestamp: {data['timestamp']:.3f} s")
+    print("")
+
 '''
 측정 값을 실시간으로 LCD에 출력하는 코드 (모든 코드 통합)
 TODO: 웹서버에 데이터 POST 필요
@@ -153,15 +164,7 @@ if __name__ == "__main__":
     while True:
         #print(read_temp())
         data = getData()
-        print(f"voltage: {data['volt']:.3f} V")
-        print(f"current: {data['current']:.3f} A")
-        print(f"soc: {data['soc']:3d} %")
-        print(f"max_single_volt: {data['max_single_volt']:.3f} V")
-        print(f"min_single_volt: {data['min_single_volt']:.3f} V")
-        print(f"max_temp: {data['max_temp']:.3f} C")
-        print(f"min_temp: {data['min_temp']:.3f} C")
-        print(f"timestamp: {data['timestamp']:.3f} s")
-        print("")
+        printData(data)
         vol, curr, soc = getBatteryStatus()
         
         now = time.localtime()
