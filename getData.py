@@ -125,6 +125,7 @@ max_volt = 0
 min_temp = 100
 max_temp = 0
 def getData():
+    global min_volt, max_volt, min_temp, max_temp
     # 센서 데이터 읽어오기
     volt, curr, soc = getBatteryStatus()
     min_volt = min(min_volt, volt)
@@ -152,7 +153,15 @@ if __name__ == "__main__":
     while True:
         #print(read_temp())
         data = getData()
-        print(data)
+        print("""
+        data["volt"] : {:6.3f}   V
+        data["current"] : {:7.4f}  A
+        data["soc"] : {:3d} %
+        data["max_single_volt"] : {:6.3f}   V
+        data["min_single_volt"] : {:6.3f}   V
+        data["max_temp"] : {:3d} C
+        data["min_temp"] : {:3d} C
+        """.format(data["volt"], data["current"], data["soc"], data["max_single_volt"], data["min_single_volt"], data["max_temp"], data["min_temp"]))
         vol, curr, soc = getBatteryStatus()
         
         now = time.localtime()
