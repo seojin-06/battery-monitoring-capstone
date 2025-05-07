@@ -52,23 +52,23 @@ def read_temp():
 # 배터리 전압으로 SOC 초기값 설정 
 # TODO : 정확도를 높이기 위한 방법 고민 필요 (배터리 방전 곡선 데이터 활용 등...(데이터 시트를 아직 못 찾음))
 def voltage_to_soc(voltage):
-    if voltage >= 4.20:
+    if voltage >= 4.20*2:
         return 100
-    elif voltage >= 4.10:
+    elif voltage >= 4.10*2:
         return 90
-    elif voltage >= 4.00:
+    elif voltage >= 4.00*2:
         return 80
-    elif voltage >= 3.90:
+    elif voltage >= 3.90*2:
         return 70
-    elif voltage >= 3.80:
+    elif voltage >= 3.80*2:
         return 60
-    elif voltage >= 3.70:
+    elif voltage >= 3.70*2:
         return 50
-    elif voltage >= 3.60:
+    elif voltage >= 3.60*2:
         return 30
-    elif voltage >= 3.50:
+    elif voltage >= 3.50*2:
         return 20
-    elif voltage >= 3.40:
+    elif voltage >= 3.40*2:
         return 10
     else:
         return 0
