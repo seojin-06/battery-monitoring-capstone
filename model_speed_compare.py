@@ -22,7 +22,9 @@ with open('norm.pkl', 'rb') as f:
 
 # raw dataset 컬럼 순서 (timestamp 포함)
 raw_columns = ["volt", "current", "soc", "max_single_volt", "min_single_volt", "max_temp", "min_temp", "timestamp"]
-
+i = 0
+before = 0
+after = 0
 while True:
     sensor_data = {
         "volt": 3.7,                 # 팩 전체 전압
@@ -68,5 +70,12 @@ while True:
     elapsed_full = time.time() - start_time
     print(f"비경량화 모델 추론 시간: {elapsed_full:.6f}초")
 
+    # 평균 시간 계산
+    before += elapsed_full
+    after += elapsed_light
+    i += 1
+    print(f"비경량화 모델 평균 추론 시간: {before / i:.6f}초")
+    print(f"경량화 모델 평균 추론 시간: {after / i:.6f}초")
+    print("")
     # 다음 데이터 읽기 전 대기
     time.sleep(1)

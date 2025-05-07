@@ -134,7 +134,7 @@ def getData():
     min_temp = min(min_temp, temp_c)
     max_temp = max(max_temp, temp_c)
     sensor_data = {
-        "volt": 4.2,                 # 팩 전체 전압
+        "volt": volt,                 # 팩 전체 전압
         "current": curr,              # 배터리 전류
         "soc": soc,                 # state of charge
         "max_single_volt": max_volt,      # 최고 셀 전압
