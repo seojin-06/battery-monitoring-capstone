@@ -1,6 +1,10 @@
 import os
 import RPi_I2C_driver #GPL License
 import time
+#ADS1115
+import busio
+import adafruit_ads1x15.ads1115 as ADS
+from adafruit_ads1x15.analog_in import AnalogIn
 
 #ina219 전압 측정 모듈
 import board
@@ -120,19 +124,26 @@ def getBatteryStatus():
     current = current/1000
     return voltage, current, soc
 
-min_volt = 4.2
-max_volt = 0
-min_temp = 100
-max_temp = 0
+# ADS1115를 이용한 1번 셀 전압 측정
+ads = ADS.ADS1115(i2c_bus)
+def getSingleCellVoltage():
+    channel = AnalogIn(ads, ADS.P0)
+    return channel.voltage
+
+
 def getData():
     global min_volt, max_volt, min_temp, max_temp
     # 센서 데이터 읽어오기
     volt, curr, soc = getBatteryStatus()
-    min_volt = min(min_volt, volt)
-    max_volt = max(max_volt, volt)
+    firstCellVol = getSingleCellVoltage()
+    secondCellVol = volt-firstCellVol
+
+    min_volt = min(firstCellVol, secondCellVol)
+    max_volt = max(firstCellVol, secondCellVol)
     temp_c, _ = read_temp()
-    min_temp = min(min_temp, temp_c)
-    max_temp = max(max_temp, temp_c)
+    # 온도 센서가 하나라 우선 하나의 온도만 측정
+    min_temp = temp_c
+    max_temp = temp_c
     sensor_data = {
         "volt": volt,                 # 팩 전체 전압
         "current": curr,              # 배터리 전류
