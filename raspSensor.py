@@ -134,7 +134,7 @@ def getSingleCellVoltage():
 def getData():
     global min_volt, max_volt, min_temp, max_temp
     # 센서 데이터 읽어오기
-    volt, -curr, soc = getBatteryStatus()
+    volt, curr, soc = getBatteryStatus()
     firstCellVol = getSingleCellVoltage()
     secondCellVol = volt-firstCellVol
     soc = voltage_to_soc(volt/2)
@@ -147,7 +147,7 @@ def getData():
     max_temp = temp_c
     sensor_data = {
         "volt": volt/2,                 # 팩 전체 전압
-        "current": curr,              # 배터리 전류
+        "current": (-1)*curr,              # 배터리 전류
         "soc": soc,                 # state of charge
         "max_single_volt": max_volt,      # 최고 셀 전압
         "min_single_volt": min_volt,      # 최저 셀 전압
