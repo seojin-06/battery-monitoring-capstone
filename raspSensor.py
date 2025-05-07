@@ -137,7 +137,7 @@ def getData():
     volt, curr, soc = getBatteryStatus()
     firstCellVol = getSingleCellVoltage()
     secondCellVol = volt-firstCellVol
-    soc = (vol/2)/4.2*100
+    soc = (volt/2)/4.2*100
 
     min_volt = min(firstCellVol, secondCellVol)
     max_volt = max(firstCellVol, secondCellVol)
