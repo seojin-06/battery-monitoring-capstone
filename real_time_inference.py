@@ -77,17 +77,17 @@ while True:
         print(f"정상 상태. Reconstruction Error: {rec_error:.6f}")
         predict = 0
 
-    # 웹서버에 데이터 POST
-    # postData = {
-    #     "deviceId": "raspberrypi01",
-    #     "predict": predict,
-    #     "error": rec_error,
-    #     "threshold": threshold
-    # }
-    # res = requests.post("http://3.25.67.35:8082/api/monitoring/data", json=postData)
-    # print(res)
+    #웹서버에 데이터 POST
+    postData = {
+        "deviceId": "raspberrypi01",
+        "predict": predict,
+        "error": rec_error,
+        "threshold": threshold
+    }
+    res = requests.post("http://3.25.67.35:8082/api/monitoring/data", json=postData)
+    print(res)
 
 
 
     # 다음 데이터 읽기 전 잠시 대기
-    time.sleep(2)
+    time.sleep(3)
