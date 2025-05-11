@@ -167,6 +167,10 @@ def printData(data):
     print(f"min_temp: {data['min_temp']:.3f} C")
     print(f"timestamp: {data['timestamp']:.3f} s")
     print("")
+    mylcd.lcd_display_string(f"Soc: {soc:3d}%", 1)
+    mylcd.lcd_display_string(f"Temp: {read_temp()[0]:.3f} C", 2)
+    mylcd.lcd_display_string(f"vol: {vol:.3f}v ", 3)
+    mylcd.lcd_display_string(f"curr: {-curr:.3f}", 4)
 
 '''
 측정 값을 실시간으로 LCD에 출력하는 코드 (모든 코드 통합)
@@ -182,10 +186,10 @@ if __name__ == "__main__":
         now = time.localtime()
         current_time = time.strftime("%H:%M:%S", now)
 
-        mylcd.lcd_display_string(f"Time: {current_time} Soc: {soc:3d}%", 1)
-        mylcd.lcd_display_string(f"Temp: {read_temp()[0]:.3f} C", 2)
-        mylcd.lcd_display_string(f"vol: {vol:.3f}v ", 3)
-        mylcd.lcd_display_string(f"curr: {curr:.3f}", 4)
+        # mylcd.lcd_display_string(f"Time: {current_time} Soc: {soc:3d}%", 1)
+        # mylcd.lcd_display_string(f"Temp: {read_temp()[0]:.3f} C", 2)
+        # mylcd.lcd_display_string(f"vol: {vol:.3f}v ", 3)
+        # mylcd.lcd_display_string(f"curr: {curr:.3f}", 4)
         time.sleep(3)
         mylcd.lcd_clear()
 

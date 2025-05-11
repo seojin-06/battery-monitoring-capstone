@@ -68,6 +68,8 @@ while True:
 
     #센서 데이터 출력
     raspSensor.printData(sensor_data)
+    #정규화 데이터 출력
+    print(f"normalized_input: {normalized_input}")
     
     # 이상 여부 판단
     if rec_error > threshold:
@@ -84,8 +86,8 @@ while True:
         "error": rec_error,
         "threshold": threshold
     }
-    res = requests.post("http://3.25.67.35:8082/api/monitoring/data", json=postData)
-    print(res)
+    #res = requests.post("http://3.25.67.35:8082/api/monitoring/data", json=postData)
+    #print(res)
 
 
 
