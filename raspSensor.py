@@ -127,16 +127,17 @@ def getBatteryStatus():
 # ADS1115를 이용한 1번 셀 전압 측정
 ads = ADS.ADS1115(i2c_bus)
 def getSingleCellVoltage():
-    channel = AnalogIn(ads, ADS.P0)
-    return channel.voltage
+    channel1 = AnalogIn(ads, ADS.P0)
+    channel2 = AnalogIn(ads, ADS.P2)
+    return channel1.voltage, channel2.voltage
 
 
 def getData():
     global min_volt, max_volt, min_temp, max_temp
     # 센서 데이터 읽어오기
     volt, curr, soc = getBatteryStatus()
-    firstCellVol = getSingleCellVoltage()
-    secondCellVol = volt-firstCellVol
+    firstCellVol, secondCellVol = getSingleCellVoltage()
+    #secondCellVol = volt-firstCellVol
     soc = int((volt)/4.2*100)
 
     min_volt = min(firstCellVol, secondCellVol)
