@@ -137,7 +137,7 @@ def getData():
     volt, curr, soc = getBatteryStatus()
     firstCellVol = getSingleCellVoltage()
     secondCellVol = volt-firstCellVol
-    soc = int((volt/2)/4.2*100)
+    soc = int((volt)/4.2*100)
 
     min_volt = min(firstCellVol, secondCellVol)
     max_volt = max(firstCellVol, secondCellVol)
@@ -146,7 +146,7 @@ def getData():
     min_temp = temp_c
     max_temp = temp_c
     sensor_data = {
-        "volt": volt/2,                 # 팩 전체 전압
+        "volt": volt,                 # 팩 전체 전압
         "current": (-1)*curr,              # 배터리 전류
         "soc": soc,                 # state of charge
         "max_single_volt": max_volt,      # 최고 셀 전압
@@ -170,7 +170,7 @@ def printData(data):
     mylcd.lcd_display_string(f"Soc: {data['soc']:3d}%", 1)
     mylcd.lcd_display_string(f"Temp: {data['min_temp']:.3f} C", 2)
     mylcd.lcd_display_string(f"vol: {data['volt']:.3f}v ", 3)
-    mylcd.lcd_display_string(f"curr: {-data['current']:.3f}", 4)
+    mylcd.lcd_display_string(f"curr: {data['current']:.3f}", 4)
 
 '''
 측정 값을 실시간으로 LCD에 출력하는 코드 (모든 코드 통합)
