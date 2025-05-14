@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8" />
+    <title>실시간 모니터링</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.4.0"></script>
+    <style>
+        body {
+          font-family: 'Segoe UI', sans-serif;
+          background: #f0f2f5;
+          margin: 0;
+          padding: 0;
+        }
+
+        header {
+          background-color: #003366;
+          color: white;
+          padding: 20px;
+          text-align: center;
+          font-size: 24px;
+        }
+
+        .container {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          padding: 30px;
+        }
+
+        .section {
+          background: white;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          border-radius: 12px;
+          padding: 20px;
+          margin-bottom: 30px;
+          box-sizing: border-box;
+        }
+
+        .section h3 {
+          margin-top: 0;
+          color: #003366;
+        }
+
+        #device-section {
+          width: 90%;
+          max-width: 1000px;
+        }
+
+        #main-content {
+          display: flex;
+          flex-direction: row;
+          gap: 30px;
+          width: 90%;
+          max-width: 1000px;
+          flex-wrap: wrap;
+        }
+
+        #status-section {
+          flex: 0 0 300px;
+        }
+
+        #chart-section {
+          flex: 1;
+          min-width: 0;
+        }
+
+        #chart-section canvas {
+          width: 100% !important;
+          height: auto !important;
+        }
+
+        select {
+          font-size: 16px;
+          padding: 8px 16px;
+          width: 100%;
+          max-width: 300px;
+          margin-top: 10px;
+        }
+
+        .status {
+          font-size: 20px;
+          margin-top: 10px;
+          display: block;
+        }
+
+        .status.safe { color: green; }
+        .status.danger { color: red; }
+
+        #detail-section {
+          width: 90%;
+          max-width: 1000px;
+          background: white;
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+          border-radius: 12px;
+          padding: 20px;
+        }
+
+        #detail-section h3 {
+          color: #003366;
+          margin-bottom: 10px;
+        }
+
+        #logTable {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 10px;
+        }
+        #logTable th, #logTable td {
+          border: 1px solid #ddd;
+          padding: 8px;
+          text-align: center;
+        }
+        #logTable th {
+          background-color: #f2f2f2;
+          font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<header>실시간 배터리 상태 모니터링</header>
+<div class="container">
+
+    <div class="section" id="device-section">
+        <h3>기기 선택</h3>
+        <select id="deviceSelect">
+            <option disabled selected>기기를 선택하세요</option>
+        </select>
+    </div>
+
+    <div id="main-content">
+        <div class="section" id="status-section">
+            <h3>상세 상태</h3>
+            <span id="currentStatus" class="status">데이터 로딩 중...</span>
+            <span id="latestError" class="status"></span>
+            <span id="latestThreshold" class="status"></span>
+        </div>
+
+        <div class="section" id="chart-section">
+            <h3>Error 수치 그래프</h3>
+            <canvas id="errorChart"></canvas>
+        </div>
+    </div>
+
+    <div class="section" id="detail-section">
+        <h3>기기 상세 정보</h3>
+        <div id="summaryInfo"></div>
+        <table id="logTable">
+            <thead>
+            <tr>
+                <th>시간</th>
+                <th>에러</th>
+                <th>이상 여부</th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+<script>
+    const deviceSelect = document.getElementById("deviceSelect");
+    const apiUrl = "/data";
+    const deviceApiUrl = "/devices";
+    const statusEl = document.getElementById("currentStatus");
+    const errorEl = document.getElementById("latestError");
+    const thresholdEl = document.getElementById("latestThreshold");
+    const ctx = document.getElementById("errorChart").getContext("2d");
+    const summaryEl = document.getElementById("summaryInfo");
+    const logTableBody = document.querySelector("#logTable tbody");
+
+    let availableDeviceIds = [];
+    let chart;
+
+    async function loadDeviceIds() {
+      try {
+        const res = await fetch(deviceApiUrl);
+        if (!res.ok) throw new Error("기기 ID 가져오기 실패");
+        const deviceIds = await res.json();
+
+        availableDeviceIds = deviceIds;
+        console.log("📡 받은 기기 목록:", deviceIds);
+
+        while (deviceSelect.options.length > 1) {
+          deviceSelect.remove(1);
+        }
+
+        deviceIds.forEach(id => {
+          const opt = document.createElement("option");
+          opt.value = id;
+          opt.textContent = `기기 ${id}`;
+          deviceSelect.appendChild(opt);
+        });
+      } catch (err) {
+        console.error("기기 목록 불러오기 실패:", err);
+      }
+    }
+
+    async function fetchData() {
+      const selectedId = deviceSelect.value || availableDeviceIds[0];
+      if (!selectedId) return;
+
+      try {
+        const res = await fetch(`${apiUrl}?deviceId=${selectedId}`);
+        const data = await res.json();
+        if (!data || data.length === 0) return;
+
+        const labels = data.map(d => new Date(d.timestamp).toLocaleTimeString()).reverse();
+        const errors = data.map(d => d.error).reverse();
+        const latest = data[0];
+
+        // 상태 텍스트
+        statusEl.textContent = latest.predict === 1 ? "이상 상태" : "정상";
+        statusEl.className = latest.predict === 1 ? "status danger" : "status safe";
+        errorEl.textContent = ` 에러 수치: ${latest.error}`;
+        thresholdEl.textContent = ` 임계치 수치: ${latest.threshold}`;
+
+        // 그래프 생성 or 업데이트
+        if (!chart) {
+          chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: labels,
+              datasets: [{
+                label: "Error 수치",
+                data: errors,
+                borderColor: "#32CD32",
+                backgroundColor: "#d4ffd4",
+                fill: false
+              }]
+            },
+            options: {
+              responsive: true,
+              scales: {
+                x: { title: { display: true, text: "시간" } },
+                y: { title: { display: true, text: "Error" }, beginAtZero: true }
+              },
+              plugins: {
+                annotation: {
+                  annotations: {
+                    thresholdLine: {
+                      type: 'line',
+                      yMin: latest.threshold,
+                      yMax: latest.threshold,
+                      borderColor: 'black',
+                      borderWidth: 2,
+                      borderDash: [4, 4],
+                    }
+                  }
+                }
+              }
+            }
+          });
+        } else {
+          chart.data.labels = labels;
+          chart.data.datasets[0].data = errors;
+          chart.update();
+        }
+
+        // 요약 정보
+        const avgError = (errors.reduce((a, b) => a + b, 0) / errors.length).toFixed(3);
+        const avgThreshold = (data.map(d => d.threshold).reduce((a, b) => a + b, 0) / data.length).toFixed(3);
+        const predictCount = data.filter(d => d.predict === 1).length;
+        summaryEl.innerHTML = `
+          평균 에러: <b>${avgError}</b><br>
+          이상 탐지 횟수: <b>${predictCount}</b>
+        `;
+
+        // 로그 테이블
+        logTableBody.innerHTML = "";
+        data.slice(0, 10).forEach(d => {
+          const row = `
+            <tr>
+              <td>${new Date(d.timestamp).toLocaleString()}</td>
+              <td>${d.error.toFixed(3)}</td>
+              <td>${d.predict === 1 ? '이상' : '정상'}</td>
+            </tr>`;
+          logTableBody.innerHTML += row;
+        });
+
+      } catch (err) {
+        console.error("데이터 로딩 실패:", err);
+      }
+    }
+
+    deviceSelect.addEventListener("change", fetchData);
+
+    window.addEventListener("DOMContentLoaded", async () => {
+      await loadDeviceIds();
+      fetchData();
+      setInterval(fetchData, 5000);
+    });
+</script>
+</body>
+</html>
