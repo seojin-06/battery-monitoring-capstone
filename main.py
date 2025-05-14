@@ -45,13 +45,13 @@ class SequenceDataCollector:
 
 
 
-model = torch.load('quantized_model.torch', weights_only=False, map_location='cpu')
+model = torch.load('./model/dyad_vae_save/quantized_model.torch', weights_only=False, map_location='cpu')
 model.eval()
 
 columns = ["soc", "current", "min_temp", "max_single_volt", "min_single_volt", "volt", "max_temp"]
 task = tasks.Task(columns=columns, task_name="batterybrandb")
 
-with open('norm.pkl', 'rb') as f:
+with open('./model/dyad_vae_save/norm.pkl', 'rb') as f:
     normalizer = pickle.load(f)
 
 threshold = 0.018541733038268546
