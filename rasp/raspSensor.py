@@ -1,5 +1,5 @@
 import os
-import rasp.RPi_I2C_driver #GPL License
+from rasp import RPi_I2C_driver #GPL License
 import time
 #ADS1115
 import busio
