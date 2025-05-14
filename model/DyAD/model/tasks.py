@@ -1,7 +1,7 @@
 import numpy as np
 import torch
 
-from utils import to_var
+from model.DyAD.utils import to_var
 
 
 class Label:
