@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn.utils.rnn import pack_padded_sequence, pad_packed_sequence
 
-from utils import to_var
+from model.DyAD.utils import to_var
 
 
 class DynamicVAE(nn.Module):
