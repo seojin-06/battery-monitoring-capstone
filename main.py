@@ -4,7 +4,7 @@ import numpy as np
 import pickle
 from collections import deque
 from model.DyAD.model import tasks
-from model.DyAD.model import dynamic_vae
+from model import dynamic_vae
 from rasp import raspSensor
 import requests
 
