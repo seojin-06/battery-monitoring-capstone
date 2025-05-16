@@ -11,7 +11,7 @@
 - Database: AWS RDS (MariaDB)
 - Server: AWS EC2 (Ubuntu)
 ## 3. 시퀀스
-![시퀀스 drawio](https://github.com/user-attachments/assets/6321aecb-9920-4395-85b6-c4298eb478ad)
+![시퀀스 drawio](https://github.com/user-attachments/assets/83fc004b-0a25-436c-89a7-00ff7850028f)
 - 라즈베리파이가 이상 탐지 결과(deviceId, error, predict, threshold)를 EC2 서버로 POST 전송
 - EC2에서 Spring Boot 서버가 데이터를 수신하고 RDS에 저장
 - 웹사이트에서 기기 선택 시 해당 기기의 데이터를 서버 API를 통해 요청
