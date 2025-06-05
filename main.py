@@ -54,7 +54,7 @@ task = tasks.Task(columns=columns, task_name="batterybrandb")
 with open('./model/dyad_vae_save/norm.pkl', 'rb') as f:
     normalizer = pickle.load(f)
 
-threshold = 0.018541733038268546
+threshold = 14.018541733038268546
 
 # raw dataset 컬럼 순서 (timestamp 포함)
 raw_columns = ["volt", "current", "soc", "max_single_volt", "min_single_volt", "max_temp", "min_temp", "timestamp"]
