@@ -59,19 +59,19 @@ threshold = 0.018541733038268546
 # raw dataset 컬럼 순서 (timestamp 포함)
 raw_columns = ["volt", "current", "soc", "max_single_volt", "min_single_volt", "max_temp", "min_temp", "timestamp"]
 
-sequence_collector = SequenceDataCollector(max_seq_length=128, timestamp_increment=10)
+cycle = 2
+sequence_collector = SequenceDataCollector(max_seq_length=cycle, timestamp_increment=10)
 
 mse = torch.nn.MSELoss(reduction='mean')
 
-print("시퀀스 데이터 수집을 시작합니다. 128개의 데이터 포인트를 수집할 때까지 기다립니다...")
+print(f"시퀀스 데이터 수집을 시작합니다. {cycle}개의 데이터 포인트를 수집할 때까지 기다립니다...")
 
 while True:
     try:
         sensor_data = raspSensor.getData()
         sequence_collector.add_sensor_data(sensor_data)
         
-        raspSensor.printData(sensor_data)
-        print(f"현재 수집된 데이터 포인트: {len(sequence_collector.data_queue)}/128")
+        print(f"현재 수집된 데이터 포인트: {len(sequence_collector.data_queue)}/{cycle}")
         
         # 충분한 데이터가 모이면 이상 탐지 수행 - 약 20분
         if sequence_collector.is_ready():
@@ -106,7 +106,7 @@ while True:
             else:
                 print(f"정상 상태. Reconstruction Error: {rec_error:.6f}")
                 predict = 0
-            
+            raspSensor.printData(sensor_data, rec_error, predict)
             # 웹서버에 데이터 POST
             postData = {
                 "deviceId": "raspberrypi01",

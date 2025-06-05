@@ -158,7 +158,8 @@ def getData():
     }
     return sensor_data
 
-def printData(data):
+def printData(data, rec_error, predict):
+    err = "이상" if predict == 1 else "정상"
     print(f"voltage: {data['volt']:.3f} V")
     print(f"current: {data['current']:.3f} A")
     print(f"soc: {data['soc']:3d} %")
@@ -170,8 +171,8 @@ def printData(data):
     print("")
     mylcd.lcd_display_string(f"Soc: {data['soc']:3d}%", 1)
     mylcd.lcd_display_string(f"Temp: {data['min_temp']:.3f} C", 2)
-    mylcd.lcd_display_string(f"vol: {data['volt']:.3f}v ", 3)
-    mylcd.lcd_display_string(f"curr: {data['current']:.3f}", 4)
+    mylcd.lcd_display_string(f"vol: {data['volt']:.3f}v, err:{rec_error:.2f} ", 3)
+    mylcd.lcd_display_string(f"curr: {data['current']:.3f}, 이상: {err}", 4)
 
 '''
 측정 값을 실시간으로 LCD에 출력하는 코드 (모든 코드 통합)
