@@ -159,7 +159,7 @@ def getData():
     return sensor_data
 
 def printData(data, rec_error, predict):
-    err = "Ok" if predict == 1 else "Not ok"
+    err = "Not Ok" if predict == 1 else "Ok"
     print(f"voltage: {data['volt']:.3f} V")
     print(f"current: {data['current']:.3f} A")
     print(f"soc: {data['soc']:3d} %")
