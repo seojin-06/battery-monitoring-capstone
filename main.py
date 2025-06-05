@@ -116,8 +116,8 @@ while True:
                 "threshold": threshold
             }
             
-            # res = requests.post("http://3.25.67.35:8082/api/monitoring/data", json=postData)
-            # print(res)
+            res = requests.post("http://3.25.67.35:8082/api/monitoring/data", json=postData)
+            print(res)
         
         # 다음 데이터 읽기 전 잠시 대기 (10s)
         time.sleep(10)
