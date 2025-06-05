@@ -106,6 +106,7 @@ while True:
             else:
                 print(f"정상 상태. Reconstruction Error: {rec_error:.6f}")
                 predict = 0
+            print(time.strftime("%Y-%m-%d %H:%M:%S", time.localtime()))
             raspSensor.printData(sensor_data, rec_error, predict)
             # 웹서버에 데이터 POST
             postData = {
